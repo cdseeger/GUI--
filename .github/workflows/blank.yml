@@ -1,0 +1,115 @@
+#Conor Seeger
+#IS 204 
+
+# this imports the necessary modules for both creating a GUI window and saving files.
+
+from tkinter import * # the star ensures that we are selecting all of the GUI elements needed 
+from tkinter import filedialog #imports the file dialog
+import os #because we are all working on different operating systems, this ensure that this program will work on different operarting system
+
+#Create a function that will calculate the gross pay based on the employee's hours worked and hourly wage rate. If the employee worked overtime (more than 40 hours), the overtime hours should be calculated at a rate of 1.5 times the regular hourly wage rate.
+
+def calculate_employee_wage(hours_worked, hourly_wage): #a function that will calculate the gross pay based on the employee's hours worked and hourly wage rate.
+    if hours_worked > 40: 
+        overtime = hours_worked - 40 # to figure the number of overtime hours worked
+        overtime_rate = hours_worked * 1.5 # to calculate the how much overtime the employee gets paid for those hours worked
+        normal_pay = 40 * hourly_wage # the normal pay an employee would get when not working overtime
+        overtime_pay = overtime * overtime_rate #what the employee will be getting paid for their overtime
+        employee_wage = normal_pay + overtime_pay #what the employee will be making will their overtime
+
+    else: #what happens if above isn't the case 
+        
+        employee_wage = hours_worked * hourly_wage #if the employee worked 40 hours or less, then their wage will be hours worked times their wage
+    return employee_wage # returns it so that it can be used again.
+         
+def save_data():
+    Window.filename = filedialog.asksaveasfilename(parent=Window, initialdir=os.getcwd(), title="Please create a file name for your new file.",
+                                                   filetypes = (("Text Files", "*.txt"), ("All Files", "*.*")))
+
+    fileContents = Window.filename + ".txt"
+    global newFile
+    newFile = open(fileContents, "w")
+    #lblList.configure(text = fileContents)
+def save_info():
+    first_name= first_name_entry.get()
+    last_name= last_name_entry.get()
+    hours_worked2= hours_worked_entry.get()
+    hourly_wage2= hourly_wage_entry.get()
+    global newFile
+    newFile.write(first_name + "," + last_name + ", " + hours_worked2 + "," + hourly_wage2 + "\n")
+    return 
+            
+def clear_data():
+    first_name.delete(0, END)
+    last_name.delete(0, END)
+    hours_worked2.delete(0, END)
+    hourly_wage2.delete(0, END)
+    employee_wage2.delete(0, END)
+    first_name.focus()
+    return
+
+def employee_wage_button():
+    hours_worked = int(hours_worked_entry.get())
+    hourly_wage = float(hourly_wage_entry.get())
+    employee_wage = calculate_employee_wage(hours_worked, hourly_wage)
+    employee_wage_label.configure(text='$' + str(employee_wage))
+        
+def exit_prog():
+    newFile2.close()
+    Window.destroy()
+    return
+
+#Creates and sizes program main window
+Window = Tk() #Creates the GIU Window object and names it
+Window.title("Employee Pay Calculator") #Creates a title for the GUI window
+Window.geometry("300x300") #Specifies the window size
+
+#Create labels for the textboxes
+first_name_label = Label(Window, text="First Name:",relief = RAISED, width = 10, height = 1, wraplength = 100, anchor = NW, justify = LEFT)
+first_name_label.grid(row=0, column=0) 
+
+last_name_label = Label(Window, text='Last Name:',relief = RAISED, width = 10, height = 1, wraplength = 100, anchor = NW, justify = LEFT)
+last_name_label.grid(row=1, column=0)
+
+hours_worked_label = Label(Window, text='Hours Worked:', relief = RAISED, width = 10, height = 1, wraplength = 100, anchor = NW, justify = LEFT)
+hours_worked_label.grid(row=2, column=0)
+
+hourly_wage_label = Label(Window, text='Hourly Wage:', relief = RAISED, width = 10, height = 1, wraplength = 100, anchor = NW, justify = LEFT)
+hourly_wage_label.grid(row=3, column=0)
+
+employee_wage_label = Label(Window, text='')
+employee_wage_label.grid(row=4, column=1)
+
+#Create textboxes for user input
+first_name_entry = Entry(Window)
+first_name_entry.grid(row=0, column=1)
+
+last_name_entry = Entry(Window)
+last_name_entry.grid(row=1, column=1)
+
+hours_worked_entry = Entry(Window)
+hours_worked_entry.grid(row=2, column=1)
+
+hourly_wage_entry = Entry(Window)
+hourly_wage_entry.grid(row=3, column=1)
+
+#Create Command Button to calculate empoloyee wage, save data, clear data and close the file 
+btn_employee_wage= Button(Window, text = "calculate employee wage", command = employee_wage_button)
+btn_employee_wage.grid(column = 1, row = 5)
+
+btn_file_save = Button(Window, text = "save employee wage", command = save_data)
+btn_file_save.grid(column = 1, row = 6)
+
+btn_clear_file = Button(Window, text = "clear", command = clear_data)
+btn_clear_file.grid(column = 1, row = 8)
+
+btnsave_info = Button(Window, text = "Save Pay Data", command = save_info) #Button to call SavePay function
+btnsave_info.grid(column = 1, row = 9)
+
+btn_close_file = Button(Window, text = "close the file", command = exit_prog)
+btn_close_file.grid(column = 1, row = 7)
+
+#Creates a file after window is opened, by calling the FileSave function
+#Window.after(1,save_data) #The after method runs 1 millisecond after the window is created
+#'''This starts the program by invoking the main window's main loop above.'''
+#Window.mainloop()
